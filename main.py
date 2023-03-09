@@ -72,6 +72,12 @@ if diff_percent >= 3:
         description = (article['description']).encode('ascii', 'ignore').decode('ascii')
         formatted_articles_list.append(f"Subject: TSLA: {up_down_sign}{diff_percent}%\n\nHeadline: {title}. \nBrief: {description}.")
 
-
+    with smtplib.SMTP(GMAIL_SERVER) as connection:
+        connection.starttls()
+        connection.login(MY_EMAIL, MY_PASSWORD)
+        for article in formatted_articles_list:
+            connection.sendmail(from_addr=MY_EMAIL,
+                                to_addrs=EMAIL_TEST,
+                                msg=f"{article}")
 
 
