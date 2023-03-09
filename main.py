@@ -50,3 +50,18 @@ positive_difference = abs(yesterday_closing_price - before_yesterday_closing_pri
 
 # Work out the percentage difference in price between yesterday and before yesterday
 diff_percent = round(positive_difference / yesterday_closing_price * 100)
+up_down_sign = None
+
+if diff_percent > 0:
+    up_down_sign = "+"
+else:
+    up_down_sign = "-"
+
+
+if diff_percent >= 3:
+    ## STEP 2: Use https://newsapi.org/docs/endpoints/everything and fetch the first 3 articles for the COMPANY_NAME.
+    response_news = requests.get(NEWS_ENDPOINT, NEWS_PARAMS)
+    response_news.raise_for_status()
+    data_news = response_news.json()
+    three_articles = data_news["articles"][:3]
+
