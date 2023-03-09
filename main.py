@@ -65,3 +65,13 @@ if diff_percent >= 3:
     data_news = response_news.json()
     three_articles = data_news["articles"][:3]
 
+    ## STEP 3: Use smtplib and send a separate message with each article's title and description to your phone number.
+    formatted_articles_list = []
+    for article in three_articles:
+        title = (article['title']).encode('ascii', 'ignore').decode('ascii')
+        description = (article['description']).encode('ascii', 'ignore').decode('ascii')
+        formatted_articles_list.append(f"Subject: TSLA: {up_down_sign}{diff_percent}%\n\nHeadline: {title}. \nBrief: {description}.")
+
+
+
+
