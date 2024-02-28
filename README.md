@@ -1,5 +1,7 @@
 # Système de Notification des Prix d'Actions et Actualités
 
+ℹ️ IMPORTANT ℹ️ : le code est déprécié car le endpoint visé de l'API Alpha Vantage est désormais premium et nécessite de souscrire à un plan premium payant. Le retour de la requête vers le endpoint de l'API Alpha Vintage n'a donc peut-être pas le même format aujourd'hui.
+
 ## Présentation
 Ce script surveille les fluctuations des prix des actions et envoie des alertes par e-mail lorsqu'il y a une variation significative. Il utilise l'API Alpha Vantage pour obtenir les données sur les prix des actions de la société Tesla Inc (TSLA) et l'API News pour récupérer les actualités liées à Tesla Inc. Lorsque le prix des actions de Tesla varie de plus de 3% par rapport à la journée précédente, le script envoie un e-mail contenant les trois premiers articles d'actualité sur Tesla.
 
