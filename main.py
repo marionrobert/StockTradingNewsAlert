@@ -33,14 +33,6 @@ response.raise_for_status()
 data = response.json()
 days_data = data["Time Series (Daily)"]
 
-# # my_way
-# days_closing_hours = {key: days_data[key]["4. close"] for (key, value) in last_days_data.items()}
-# yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-# before_yesterday = (datetime.date.today() - datetime.timedelta(days=2)).strftime("%Y-%m-%d")
-# yesterday_closing_price = float(days_closing_hours[yesterday])
-# before_yesterday_closing_price = float(days_closing_hours[before_yesterday])
-
-# solution
 data_list = [value for (key, value) in days_data.items()]
 yesterday_closing_price = float(data_list[0]["4. close"])
 before_yesterday_closing_price = float(data_list[1]["4. close"])
