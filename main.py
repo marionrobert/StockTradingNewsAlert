@@ -31,40 +31,45 @@ EMAIL_TEST = os.environ["EMAIL_TEST"]
 response = requests.get(STOCK_ENDPOINT, ALPHAVANTAGE_PARAMS)
 response.raise_for_status()
 data = response.json()
-days_data = data["Time Series (Daily)"]
+print("data -->", data)
+# --> data --> {'Information': 'Thank you for using Alpha Vantage! This is a premium endpoint. You may subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly unlock all premium endpoints'}
+#‼ the code is deprecated because the targeted endpoint of the Alpha Vantage API is now premium and requires subscribing to a paid premium plan.️‼️
+#days_data = data["Time Series (Daily)"]
+#data_list = [value for (key, value) in days_data.items()]
+# yesterday_closing_price = float(data_list[0]["4. close"])
+# before_yesterday_closing_price = float(data_list[1]["4. close"])
+yesterday_closing_price = 1568.3600
+before_yesterday_closing_price = 1643.0000
 
-data_list = [value for (key, value) in days_data.items()]
-yesterday_closing_price = float(data_list[0]["4. close"])
-before_yesterday_closing_price = float(data_list[1]["4. close"])
-
-# Find the positive difference between the two prices. e.g. 40 - 20 = -20, but the positive difference is 20
-positive_difference = abs(yesterday_closing_price - before_yesterday_closing_price)
+# Find the difference between the two prices.
+positive_difference = yesterday_closing_price - before_yesterday_closing_price
+print("positive_difference -->", positive_difference)
 
 # Work out the percentage difference in price between yesterday and before yesterday
-diff_percent = round(positive_difference / yesterday_closing_price * 100)
+diff_percent = round((positive_difference / yesterday_closing_price) * 100, 2)
+print("diff_percent -->", diff_percent)
 up_down_sign = None
 
-if diff_percent > 0:
-    up_down_sign = "+"
-else:
-    up_down_sign = "-"
-
-
-if diff_percent >= 3:
+if abs(diff_percent) >= 3:
     ## STEP 2: Use https://newsapi.org/docs/endpoints/everything and fetch the first 3 articles for the COMPANY_NAME.
     response_news = requests.get(NEWS_ENDPOINT, NEWS_PARAMS)
     response_news.raise_for_status()
     data_news = response_news.json()
+    # print("data_news -->", data_news)
     three_articles = data_news["articles"][:3]
 
     ## STEP 3: Use smtplib and send a separate message with each article's title and description to your phone number.
     formatted_articles_list = []
     for article in three_articles:
         title = (article['title']).encode('ascii', 'ignore').decode('ascii')
-        description = (article['description']).encode('ascii', 'ignore').decode('ascii')
-        formatted_articles_list.append(f"Subject: TSLA: {up_down_sign}{diff_percent}%\n\nHeadline: {title}. \nBrief: {description}.")
+        description = None
+        try :
+            description = (article['description']).encode('ascii', 'ignore').decode('ascii')
+        except :
+            description = "No description"
+        formatted_articles_list.append(f"Subject: TSLA: {diff_percent}%\n\nHeadline: {title}. \nBrief: {description}.")
 
-    with smtplib.SMTP(GMAIL_SERVER) as connection:
+    with smtplib.SMTP(GMAIL_SERVER, 587) as connection:
         connection.starttls()
         connection.login(MY_EMAIL, MY_PASSWORD)
         for article in formatted_articles_list:
